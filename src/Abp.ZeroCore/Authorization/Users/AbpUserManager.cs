@@ -27,9 +27,10 @@ using Newtonsoft.Json;
 
 namespace Abp.Authorization.Users
 {
-    public class AbpUserManager<TRole, TUser> : UserManager<TUser>, IDomainService
+    public class AbpUserManager<TRole, TUser,TOrganizationUnit> : UserManager<TUser>, IDomainService
         where TRole : AbpRole<TUser>, new()
         where TUser : AbpUser<TUser>
+        where TOrganizationUnit : OrganizationUnit
     {
         protected IUserPermissionStore<TUser> UserPermissionStore
         {
@@ -61,7 +62,7 @@ namespace Abp.Authorization.Users
         private readonly IPermissionManager _permissionManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly ICacheManager _cacheManager;
-        private readonly IRepository<OrganizationUnit, long> _organizationUnitRepository;
+        private readonly IRepository<TOrganizationUnit, long> _organizationUnitRepository;
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationUnitRepository;
         private readonly IOrganizationUnitSettings _organizationUnitSettings;
         private readonly ISettingManager _settingManager;
@@ -81,7 +82,7 @@ namespace Abp.Authorization.Users
             IPermissionManager permissionManager,
             IUnitOfWorkManager unitOfWorkManager,
             ICacheManager cacheManager,
-            IRepository<OrganizationUnit, long> organizationUnitRepository,
+            IRepository<TOrganizationUnit, long> organizationUnitRepository,
             IRepository<UserOrganizationUnit, long> userOrganizationUnitRepository,
             IOrganizationUnitSettings organizationUnitSettings,
             ISettingManager settingManager)
@@ -557,7 +558,7 @@ namespace Abp.Authorization.Users
         }
 
         [UnitOfWork]
-        public virtual Task<List<OrganizationUnit>> GetOrganizationUnitsAsync(TUser user)
+        public virtual Task<List<TOrganizationUnit>> GetOrganizationUnitsAsync(TUser user)
         {
             var query = from uou in _userOrganizationUnitRepository.GetAll()
                         join ou in _organizationUnitRepository.GetAll() on uou.OrganizationUnitId equals ou.Id
