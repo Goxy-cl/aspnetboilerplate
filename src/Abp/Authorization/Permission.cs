@@ -41,6 +41,9 @@ namespace Abp.Authorization
         /// </summary>
         public MultiTenancySides MultiTenancySides { get; set; }
 
+
+        public object CustomObject { get; set; }
+
         /// <summary>
         /// Depended feature(s) of this permission.
         /// </summary>
@@ -60,12 +63,14 @@ namespace Abp.Authorization
         /// <param name="description">A brief description for this permission</param>
         /// <param name="multiTenancySides">Which side can use this permission</param>
         /// <param name="featureDependency">Depended feature(s) of this permission</param>
+        /// <param name="customObject"></param>
         public Permission(
             string name,
             ILocalizableString displayName = null,
             ILocalizableString description = null,
             MultiTenancySides multiTenancySides = MultiTenancySides.Host | MultiTenancySides.Tenant,
-            IFeatureDependency featureDependency = null)
+            IFeatureDependency featureDependency = null,
+            object customObject=null)
         {
             if (name == null)
             {
@@ -77,7 +82,7 @@ namespace Abp.Authorization
             Description = description;
             MultiTenancySides = multiTenancySides;
             FeatureDependency = featureDependency;
-
+            CustomObject = customObject;
             _children = new List<Permission>();
         }
 
@@ -91,9 +96,10 @@ namespace Abp.Authorization
             ILocalizableString displayName = null,
             ILocalizableString description = null,
             MultiTenancySides multiTenancySides = MultiTenancySides.Host | MultiTenancySides.Tenant,
-            IFeatureDependency featureDependency = null)
+            IFeatureDependency featureDependency = null,
+            object customObject = null)
         {
-            var permission = new Permission(name, displayName, description, multiTenancySides, featureDependency) { Parent = this };
+            var permission = new Permission(name, displayName, description, multiTenancySides, featureDependency,customObject) { Parent = this };
             _children.Add(permission);
             return permission;
         }
