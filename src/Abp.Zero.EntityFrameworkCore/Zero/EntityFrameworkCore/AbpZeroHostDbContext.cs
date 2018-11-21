@@ -4,16 +4,20 @@ using Abp.Authorization.Roles;
 using Abp.Authorization.Users;
 using Abp.BackgroundJobs;
 using Abp.MultiTenancy;
+using Abp.Organizations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Abp.Zero.EntityFrameworkCore
 {
     [MultiTenancySide(MultiTenancySides.Host)]
-    public abstract class AbpZeroHostDbContext<TTenant, TRole, TUser, TSelf> : AbpZeroCommonDbContext<TRole, TUser, TSelf>
+    public abstract class AbpZeroHostDbContext<TTenant, TRole, TUser, TUserRole, TOrganizationUnit, TSelf> : AbpZeroCommonDbContext<TRole, TUser, TUserRole, TOrganizationUnit, TSelf>
         where TTenant : AbpTenant<TUser>
         where TRole : AbpRole<TUser>
         where TUser : AbpUser<TUser>
-        where TSelf : AbpZeroHostDbContext<TTenant, TRole, TUser, TSelf>
+        where TUserRole : UserRole
+        where TOrganizationUnit : OrganizationUnit
+        where TSelf : AbpZeroHostDbContext<TTenant, TRole, TUser, TUserRole, TOrganizationUnit, TSelf>
+
     {
         /// <summary>
         /// Tenants

@@ -9,14 +9,23 @@ using Abp.Zero;
 
 namespace Abp.Organizations
 {
+    public class OrganizationUnitManager : OrganizationUnitManager<OrganizationUnit>
+    {
+        public OrganizationUnitManager(IRepository<OrganizationUnit, long> organizationUnitRepository) : base(organizationUnitRepository)
+        {
+        }
+    }
+
+
     /// <summary>
     /// Performs domain logic for Organization Units.
     /// </summary>
-    public class OrganizationUnitManager : DomainService
+    public class OrganizationUnitManager<TOrganizationUnit> : DomainService
+        where TOrganizationUnit : OrganizationUnit
     {
-        protected IRepository<OrganizationUnit, long> OrganizationUnitRepository { get; private set; }
+        protected IRepository<TOrganizationUnit, long> OrganizationUnitRepository { get; private set; }
 
-        public OrganizationUnitManager(IRepository<OrganizationUnit, long> organizationUnitRepository)
+        public OrganizationUnitManager(IRepository<TOrganizationUnit, long> organizationUnitRepository)
         {
             OrganizationUnitRepository = organizationUnitRepository;
 
@@ -24,14 +33,14 @@ namespace Abp.Organizations
         }
 
         [UnitOfWork]
-        public virtual async Task CreateAsync(OrganizationUnit organizationUnit)
+        public virtual async Task CreateAsync(TOrganizationUnit organizationUnit)
         {
             organizationUnit.Code = await GetNextChildCodeAsync(organizationUnit.ParentId);
             await ValidateOrganizationUnitAsync(organizationUnit);
             await OrganizationUnitRepository.InsertAsync(organizationUnit);
         }
 
-        public virtual async Task UpdateAsync(OrganizationUnit organizationUnit)
+        public virtual async Task UpdateAsync(TOrganizationUnit organizationUnit)
         {
             await ValidateOrganizationUnitAsync(organizationUnit);
             await OrganizationUnitRepository.UpdateAsync(organizationUnit);
@@ -49,7 +58,7 @@ namespace Abp.Organizations
             return OrganizationUnit.CalculateNextCode(lastChild.Code);
         }
 
-        public virtual async Task<OrganizationUnit> GetLastChildOrNullAsync(long? parentId)
+        public virtual async Task<TOrganizationUnit> GetLastChildOrNullAsync(long? parentId)
         {
             var children = await OrganizationUnitRepository.GetAllListAsync(ou => ou.ParentId == parentId);
             return children.OrderBy(c => c.Code).LastOrDefault();
@@ -101,7 +110,7 @@ namespace Abp.Organizations
             }
         }
 
-        public async Task<List<OrganizationUnit>> FindChildrenAsync(long? parentId, bool recursive = false)
+        public async Task<List<TOrganizationUnit>> FindChildrenAsync(long? parentId, bool recursive = false)
         {
             if (!recursive)
             {
