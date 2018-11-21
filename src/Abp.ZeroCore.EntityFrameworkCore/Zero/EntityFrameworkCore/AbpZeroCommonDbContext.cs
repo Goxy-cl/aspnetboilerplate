@@ -15,10 +15,12 @@ using System.Threading.Tasks;
 
 namespace Abp.Zero.EntityFrameworkCore
 {
-    public abstract class AbpZeroCommonDbContext<TRole, TUser, TSelf> : AbpDbContext
+    public abstract class AbpZeroCommonDbContext<TRole, TUser, TUserRole, TOrganizationUnit, TSelf> : AbpDbContext
         where TRole : AbpRole<TUser>
         where TUser : AbpUser<TUser>
-        where TSelf : AbpZeroCommonDbContext<TRole, TUser, TSelf>
+        where TSelf : AbpZeroCommonDbContext<TRole, TUser, TUserRole, TOrganizationUnit, TSelf>
+        where TUserRole : UserRole
+        where TOrganizationUnit : OrganizationUnit
     {
         /// <summary>
         /// Roles.
@@ -43,7 +45,7 @@ namespace Abp.Zero.EntityFrameworkCore
         /// <summary>
         /// User roles.
         /// </summary>
-        public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<TUserRole> UserRoles { get; set; }
 
         /// <summary>
         /// User claims.
@@ -98,7 +100,7 @@ namespace Abp.Zero.EntityFrameworkCore
         /// <summary>
         /// OrganizationUnits.
         /// </summary>
-        public virtual DbSet<OrganizationUnit> OrganizationUnits { get; set; }
+        public virtual DbSet<TOrganizationUnit> OrganizationUnits { get; set; }
 
         /// <summary>
         /// UserOrganizationUnits.

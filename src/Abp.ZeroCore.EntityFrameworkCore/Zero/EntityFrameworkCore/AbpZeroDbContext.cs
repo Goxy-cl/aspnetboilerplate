@@ -6,6 +6,7 @@ using Abp.Authorization.Users;
 using Abp.BackgroundJobs;
 using Abp.MultiTenancy;
 using Abp.Notifications;
+using Abp.Organizations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Abp.Zero.EntityFrameworkCore
@@ -14,11 +15,13 @@ namespace Abp.Zero.EntityFrameworkCore
     /// Base DbContext for ABP zero.
     /// Derive your DbContext from this class to have base entities.
     /// </summary>
-    public abstract class AbpZeroDbContext<TTenant, TRole, TUser, TSelf> : AbpZeroCommonDbContext<TRole, TUser, TSelf>
+    public abstract class AbpZeroDbContext<TTenant, TRole, TUser, TUserRole, TOrganizationUnit, TSelf> : AbpZeroCommonDbContext<TRole, TUser, TUserRole, TOrganizationUnit, TSelf>
         where TTenant : AbpTenant<TUser>
         where TRole : AbpRole<TUser>
         where TUser : AbpUser<TUser>
-        where TSelf : AbpZeroDbContext<TTenant, TRole, TUser, TSelf>
+        where TUserRole : UserRole
+        where TOrganizationUnit : OrganizationUnit
+        where TSelf : AbpZeroDbContext<TTenant, TRole, TUser, TUserRole, TOrganizationUnit, TSelf>
     {
         /// <summary>
         /// Tenants
